@@ -1,0 +1,40 @@
+2018/03/02 11:19:08 [emerg] 13328#3848: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat¼¯³É\nginx-1.8.1/conf/nginx.conf" failed (1113: No mapping for the Unicode character exists in the target multi-byte code page)
+2018/03/02 11:21:11 [emerg] 14820#17032: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 11:22:31 [emerg] 17740#17748: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:38:36 [emerg] 19448#19452: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:39:42 [emerg] 19020#19044: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:43:25 [emerg] 4384#19092: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:43:28 [emerg] 14828#18460: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:47:22 [emerg] 5144#17076: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:47:31 [emerg] 17792#4088: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:47:33 [emerg] 16440#968: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 13:49:26 [emerg] 18604#4856: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 14:14:35 [emerg] 684#7964: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 14:17:14 [emerg] 8724#7132: unknown directive "ï»¿server" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/b.com.conf:1
+2018/03/02 14:18:00 [emerg] 9732#7148: unknown directive "ï»¿server" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/b.com.conf:1
+2018/03/02 14:20:18 [emerg] 932#884: unknown directive "ï»¿" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/b.com.conf:2
+2018/03/02 14:20:56 [emerg] 4984#6120: unknown directive "ï»¿server" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/b.com.conf:1
+2018/03/02 14:21:43 [emerg] 11036#11924: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 14:22:26 [emerg] 740#8344: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 14:22:51 [emerg] 2316#5660: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 14:27:57 [emerg] 308#6508: bind() to 0.0.0.0:8088 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2018/03/02 15:28:15 [notice] 13544#12780: signal process started
+2018/03/02 15:37:24 [notice] 11512#2216: signal process started
+2018/03/02 17:04:09 [notice] 5324#244: signal process started
+2018/03/02 17:04:09 [error] 5324#244: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2018/03/02 17:15:49 [notice] 13716#6112: signal process started
+2018/03/02 17:15:49 [error] 13716#6112: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2018/03/02 17:51:56 [emerg] 6340#14684: unknown directive "ï»¿server" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/a.com.conf:1
+2018/03/02 17:52:49 [emerg] 3904#3820: unknown directive "ï»¿server" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/a.com.conf:1
+2018/03/02 17:53:03 [emerg] 10276#13448: unexpected "}" in H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/vhost/a.com.conf:13
+2018/03/02 17:53:34 [notice] 7988#1604: signal process started
+2018/03/02 17:53:34 [error] 7988#1604: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2018/03/02 17:53:54 [notice] 2772#4780: signal process started
+2018/03/02 17:53:54 [error] 2772#4780: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2018/03/02 17:54:46 [notice] 8836#11940: signal process started
+2018/03/02 17:54:46 [error] 8836#11940: CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2018/03/02 17:55:15 [error] 13740#13172: *91 CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "a.com:8888", referrer: "http://a.com:8888/"
+2018/03/02 17:56:55 [notice] 6580#13728: signal process started
+2018/03/02 17:58:37 [notice] 3948#12300: signal process started
+2018/03/02 18:03:34 [error] 13740#13172: *103 CreateFile() "H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/html/test/get1" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /test/get1 HTTP/1.1", host: "a.com:8888"
+2018/03/02 18:06:32 [notice] 3132#12752: signal process started

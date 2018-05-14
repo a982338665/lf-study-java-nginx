@@ -1,0 +1,176 @@
+﻿----------------------------------------
+1.apache服务器官网
+	--http://httpd.apache.org/
+	--下载过程：
+		--1.左侧第一行：Essential / DownLoad!
+		--2.http server for window
+2.使用;
+	--1.解压,dos命令进入apache下面的bin目录
+	--2.输入httpd -k install,把apache安装成windows后台服务
+		--问题：
+		1.OS:拒绝访问
+			--找到系统盘中系统工具
+			32位为C://windows//system32  
+			64位为C://windows//sysWOW64 
+			找到cmd.exe用管理员方式打开，定位到apache安装路径直到bin，
+			输入httpd.exe -k install -n "Apache22"根据自己apache的版本来定，完成
+		2.Syntax error on line 39 of H:/apache/Apache24/conf/httpd.conf:
+		  ServerRoot must be a valid directory
+			--1.打开H:/apache/Apache24/conf/httpd.conf
+			--2.更改39行：(改为解压路径)
+				# Define SRVROOT "/Apache24"
+				Define SRVROOT "H:/apache/Apache24"
+			--3.此时启动服务，会报错1,
+			--4.使用管理员打开cmd，使用命令sc delete Apache2.4
+			--5.重新安装则可以正常启动
+	--3.双击\Apache24\bin目录下的ApacheMonitor.exe就可以运行该程序
+	   (如果你想开机自动启动该软件，把该软件拉倒开始菜单里的Startup folder)
+3.可能遇到的问题：
+	--1.端口占用：
+		--apache默认监听80端口
+		--查看80端口是否被占用,dos命令行下输入：
+			netstat -aon|findstr "80"
+	--2.修改apache默认监听端口：
+		--apache目录下的conf/httpd.conf  
+		--搜索   "Listen 80"
+		--修改为Listen 8088
+		--保存之后再重新启动apache
+	--3.查看服务是否安装成功：
+		--httpd -k install 输入该命令后查看服务是否安装成功
+		--开始-->运行-->services.msc-->确定
+		--打开后如果在服务列表能够看到apache字样，说明，服务安装成功，可以直接点击左边的启动按钮来启动服务
+	--4.服务无法正常安装，
+		--首先确定软件32位和64位是否和自己的系统匹配
+		--其次，看电脑有没有安装软件相应的运行包，比如你下载的是VC9版本，
+			那么你需要先安装Microsoft Visual C++ 2008 Redistributable ，
+			同理VC11版本你需要安装Microsoft Visual C++ 2012 Update 4 Redistributable Package
+			 (X86 & x64)	
+			在ApacheHaus网站的最底部提供了相应的Visual Studio Redistributable Packages下载链接
+4.sc命令的使用：
+	以管理员身份运行
+	开始－＞运行－＞cmd
+	windows 注册服务 命令 sc的用法
+	1.服务显示名和注册键的区别，显示名称主要是在外面显示的名字(如Subversion Server)可以用命令msconfig和		service.msc来查看
+  	键名，另一种方法是用regedit注册表中HKEY_LOCAL_MACHINE->system->service中去查看.
+  	键名和显示名的转化：
+ 	sc GetKeyName (显示名)  ---->由显示名得到键名
+        sc GetDisplayName (键名)---->由键名得到显示名
+	2.对服务的操作都得由键名来做，显示名称不起作用
+	3.得到键名后就可以像linux命令service那样来操作服务
+ 	服务启动sc start '键名' 例如: sc start svn
+ 	服务停止sc stop  '键名' 例如: sc stop svn
+ 	服务删除sc delete '键名' 例如: sc delete svn
+ 	对于sc的命令，windows不常用，但是在linux下经常用service命令，其实这两个命令都是一样的，通过svn在windows
+------------------------------------------------------------
+5.整合：
+	--1.apache下载安装（http server）--包括路径，端口修改
+	--2.mod_jk.so下载：
+		http://archive.apache.org/dist/tomcat/tomcat-connectors/jk/binaries/linux/jk-1.2.28/i586/
+		http://archive.apache.org/dist/tomcat/tomcat-connectors/jk/binaries/windows/
+	--3.下载一个与你对应的，在压缩包里面有mod_jk.so文件，拷贝到apache下文件夹modules下面
+	--4.在httpd.conf同级目录下创建一个属性文件workers.properties（当前文件夹中查找）
+	--5.workers.properties中的内容(上面tomcat的参数)要和下面的参数项对应。
+		在conf/httpd.conf文件最下面添加一下信息。（修改之后见当前文件夹）
+	--6.
+	
+------------------------------------------------------------
+6.安装apache
+	--1.下载解压
+	--2.将Apache22\conf\httpd.conf文件，将ServerRoot设置为：解压路径../Apache22
+	--3.安装命令：httpd.exe -k install -n apache(拒绝访问以管理员身份运行)
+	--4.删除命令：sc delete apache
+	--5.将Apache22\conf\httpd.conf文件，将DocumentRoot设置为：解压路径Apache22/htdocs
+	--6.若报错httpd-ahssl.conf: 则注释Apache22\conf\httpd.conf文件中的： 
+	    	LoadModule ssl_module modules/mod_ssl.so
+	--7.双击：Apache22\bin目录下的：ApacheMonitor.exe（或在服务中找到apache启动）
+	--8.点击start，在浏览器中输入：http://localhost出现forbidden
+		修改文件Apache22\conf\httpd.conf 中的Deny from all改为：Allow from all
+		Errors reported here must be corrected before the service can be started.
+		不是错误而是提示你如果这行下边出现错误则解决错误后再启动！
+	-------------
+	--9.添加hosts映射
+整合开始：
+	--1.准备两个tomcat
+	--2.分别修改其中conf/server.xml(端口号3处+项目指向)
+	--3.修改Apache2.4/httpd.conf文件：(2处)
+		--1.解开注释:Include conf/extra/httpd-vhosts.conf
+		   (或者：新建${Apache2.4}/conf/vhosts.conf文件，然后在Apache2.4/httpd.conf文件
+		    中添加内容Include conf/vhosts.conf)
+		--2.添加脚本：Include conf/mod_jk.conf(引入mod_jk连接apache-tomcat)
+	--4.${Apache2.4}/conf目录下创建文件：mod_jk.conf
+	   文件内容如下：
+	  	LoadModule jk_module modules/mod_jk.so 指明mod_jk.so文件的引用位置。
+		JkWorkersFile conf/workers.properties  指明workers.properties文件的引用位置，用来给apache分配						       		       tomcat，Apache中将不同的ip或不同的域名指向到不同的tomcat服						       务器
+		# Where to put jk logs
+		JkLogFile logs/mod_jk.log
+		# Set the jk log level [debug/error/info]
+		JkLogLevel info
+		# Select the log format
+		JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
+		# JkOptions indicate to send SSL KEY SIZE,
+		JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
+		# JkRequestLogFormat set the request format
+		JkRequestLogFormat "%w %V %T"
+	--5.在目录：${Apache2.4}/conf下创建文件：workers.properties
+		配置ip-端口-域名指向
+	--6.配置Apache的虚拟主机：${Apache2.4}/conf/extra/httpd-vhosts.conf文件加入内容
+		<VirtualHost *:80>
+   			ServerName one.test.com
+    			JkMount /* one
+    			ErrorLog "logs/one-error_log"
+    			CustomLog "logs/one-access_log" common
+			</VirtualHost>
+
+			<VirtualHost *:80>
+    			ServerName two.test.com
+    			JkMount /* two
+    			ErrorLog "logs/two-error_log"
+    			CustomLog "logs/two-access_log" common
+			</VirtualHost>
+
+			<VirtualHost *:80>
+    			DocumentRoot "D:\apache-tomcat-6.0.51-file"
+    			ServerName   file.test.com
+    			ErrorLog logs/file-error_log
+    			CustomLog logs/file-access_log combined
+    			<Directory "D:\apache-tomcat-6.0.51-file">
+        		Require all granted
+    			</Directory>
+		</VirtualHost>
+		
+------------------------------------------------------------
+Apache：这里指的是httpd，Web服务器，用来处理静态文件。
+tomcat：应用服务器，是servlet、jsp（jsp在后面其实也是被解释成servlet）的运行容器，可以处理servlet、jsp这些动态文件，当然也可以处理静态文件，但是性能不如Apache、nginx这些web服务器性能好。所以一般还是单独使用web服务器来处理静态文件，应用服务器处理动态文件。
+
+mod_jk：是tomcat提供的、用来连接Apache与tomcat的一个插件，默认下载的tomcat中是没有的，需要单独下载。
+------------------------------------------------------------
+C:\Windows\System32\drivers\etc\hosts文件：
+	--上网域名--windows查询自身的ip-域名映射关系
+	--若果有：取ip进行访问(ip域名切不可配置错误)
+	--如果无：去DNS服务器进行域名解析获取ip，访问网络效率降低
+	所以，添加此映射关系Hosts文件就能提高解析效率
+------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

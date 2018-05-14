@@ -1,0 +1,117 @@
+﻿------------------------------
+1.C:\Windows\System32\drivers\etc\hosts文件：
+	添加映射：b.com表示被调用方的域名
+	127.0.0.1 b.com
+
+2.下载地址：http://nginx.org/en/download.html
+
+3.打开nginx目录：H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat集成\nginx-1.8.1\conf
+	--1.新建vhost文件夹：用于存放虚拟主机的配置文件
+	--2.打开同目录下nginx.conf在倒数第二行行添加配置：
+		    #}
+			include vhost/*.conf;
+		}
+	--3.进入vhost文件夹创建文件：
+		--b.com.conf:
+			server{
+				listen 8888;
+				server_name b.com;
+	
+			location /{
+				proxy_pass http://localhost:8080/;
+				}
+			}
+			#监听80端口，将所有的请求都转到localhost：8080
+	--4.测试：		
+		C:\Users\cjh>h:
+
+		H:\> cd H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1
+
+		H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1>nginx.exe -t
+		nginx: the configuration file H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-				1.8.1/conf/nginx.conf syntax is ok
+		nginx: [emerg] bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way 		forbidden by its access permissions)
+		nginx: configuration file H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1/conf/nginx.conf 		test failed
+		-----------------
+		错误：端口占用
+		解决：改用其他端口
+			--1.打开nginx-1.8.1/conf/nginx.conf修改端口为8888
+			--2.添加监听端口映射：..\nginx-1.8.1\conf\vhost\b.com.conf 监听端口也设置为8888
+			--3.测试成功：H:\Git\DOCRecord\DOCRecord\DOCRecord\tomacat\nginx-1.8.1>nginx.exe -t
+			--4.开启服务：tomacat\nginx-1.8.1>nginx.exe
+			--5.浏览器访问:b.com:8888则映射至localhost:8080
+		注意：如下辅助
+			--1  按键盘win+r 打开运行界面，输入cmd，确定，打开管理员界面
+			--2  输入netstat -aon | findstr :80 
+
+			--3.查找端口占用情况，找到提示占用的端口号0.0.0.0:80，
+			    我的是Apache2.2（之前配置php开发环境时用的）占用了，查看后，pid值为4300
+			--4.输入tasklist|findstr "4300" 
+		-----------------
+		错误： [emerg] unknown directive "锘縮erver"
+		解决：conf文件被记事本编辑过，保存成了含BOM头的文件
+		      使用其他编辑器将文件另存为UTF-8不含Bom头的格式
+		      注：记事本编辑UTF-8都会加BOM头
+
+---------------------------------------------------------------
+nginx常用代理配置：
+    server {
+    listen       8888;
+    server_name b.com;
+
+    location / {
+       		proxy_pass http://localhost:8080/;
+		
+		#以下内容等同于在应用服务器上的filter中所写，用于处理跨域
+		add_header Access-Control-Allow-Methods *;
+		add_header Access-Control-Max-Age 3600;
+		add_header Access-Control-Allow-Credentials true;
+		
+		add_header Access-Control-Allow-Origin $http_origin;
+		add_header Access-Control-Allow-Headers $http_access_control_request_headers;
+		
+		#跳过预检命令(注意：if后面要有空格，防止语法报错)
+		if ($request_method = OPTIONS){
+			return 200;
+		}
+    }
+}
+
+
+---------------------------------------------------------------
+nginx命令--：
+	tomacat\nginx-1.8.1>start nginx.exe  启动nginx
+	tomacat\nginx-1.8.1>nginx.exe -t     测试可否正常启动
+	tomacat\nginx-1.8.1>nginx.exe -s reload 重载nginx配置文件	
+	tomacat\nginx-1.8.1>nginx.exe -s stop 停止nginx服务	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
