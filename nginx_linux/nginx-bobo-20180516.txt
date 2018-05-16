@@ -1,0 +1,86 @@
+﻿————————————————————————————————————————————————————————————————————
+1.nginx安装环境：
+	·nginx-C语言开发-运行环境建议在linux上
+	1.gcc：nginx编译环境
+		安装命令：yum install gcc-c++
+	2.PCRE:
+		·一个Perl库
+		·兼容正则表达式
+		·nginx的http模块使用pcre来解析正则表达式
+		·pcre-devel是使用pcre开发的一个二次开发库，nginx也需要此库
+		安装命令：yum install -y pcre pcre-devel
+	3.zlib:提供了多种解压和压缩的方式，nginx用它对http包的内容进行gzip
+		·安装命令：yum install -y zlib zlib-devel
+	4.openssl:强大的安全套接字层密码库，秘钥证书ssl协议
+		·nginx不仅支持http协议还支持https(在ssl协议上传输http)
+		安装命令：yum install -y openssl openssl-devel
+	//--------------------------------------
+	yum install gcc-c++
+	yum install -y pcre pcre-devel
+	yum install -y zlib zlib-devel
+	yum install -y openssl openssl-devel
+	//--------------------------------------
+2.编译安装：
+	0.下载：wget http://nginx.org/download/nginx-1.8.1.tar.gz
+	1.拷贝解压：tar -zxvf nginx-1.8.0.tar.gz
+	2.configure：./configure --help
+		·参数设置如下：
+		以下全为命令：--执行完成后创建文件MakeFile
+		./configure \
+		--prefix=/usr/local/nginx \
+		--pid-path=/var/run/nginx/nginx.pid \
+		--lock-path=/var/lock/nginx.lock \
+		--error-log-path=/var/log/nginx/error.log \
+		--http-log-path=/var/log/nginx/access.log \
+		--with-http_gzip_static_module \
+		--http-client-body-temp-path=/var/temp/nginx/client \
+		--http-proxy-temp-path=/var/temp/nginx/proxy \
+		--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+		--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+		--http-scgi-temp-path=/var/temp/nginx/scgi
+		——————————————————————————————————————————
+		执行以上命令出现的问题：
+		 ./configure: error: C compiler cc is not found
+			确认自己是安装了gcc的。
+			在网上查了很多资料都不管用。最后解决方法：
+			whereis gcc
+			gcc: /usr/bin/gcc /usr/lib/gcc
+			cd /usr/bin/
+			ls -alh gcc
+			gcc -> gcc-4.9
+			sudo ln -s gcc-4.9 cc
+	3.上边将临时文件目录指定为/var/temp/nginx需要在/及nginx目录
+	————————————————————————
+	4.编译：make 
+	5.安装：make install 
+		安装位置：在步骤2中第一行--prefix=/usr/local/nginx \
+3.启动nginx：端口默认为80
+	1- cd /usr/local/nginx/sbin/
+	2-启动 ./nginx 
+	  问题：
+	  nginx: [emerg] mkdir() "/var/temp/nginx/client" failed (2: No such file or directory)
+	  解决：创建以上目录
+	3-关闭 ./nginx -s stop
+	4-测试访问：ifconfig获取ip--若不能再本机访问请参照linux的使用
+	————————————————————————
+	5.nginx服务不关闭，但是需要修改配置文件并重新加载
+	  命令：./nginx -s reload
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
