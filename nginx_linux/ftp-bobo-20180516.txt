@@ -1,1 +1,163 @@
-﻿
+﻿——————————————————————————————————————
+1.安装vsftpd组件：
+	yum -y install vsftpd  安装完成后有/etc/vsftpd/vsftpd.conf 文件
+2.添加一个ftp用户:
+	useradd ftpuser 可以用这个登录，记得用普通登录不要用匿名了。登录后默认的路径为 /home/ftpuser.	
+3.给ftp用户添加密码：
+	passwd ftpuser
+4.防火墙开启21端口:
+	vim /etc/sysconfig/iptables
+	-A INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
+	service iptables restart
+5.修改selinux：
+	--问题;
+		外网是可以访问上去了，可是发现没法返回目录
+		(使用ftp的主动模式，被动模式还是无法访问)也上传不了
+	--修改：
+	getsebool -a | grep ftp 
+		allow_ftpd_anon_write --> off
+		——————————
+		allow_ftpd_full_access --> off  -----改为on
+		——————————
+		allow_ftpd_use_cifs --> off
+		allow_ftpd_use_nfs --> off
+		——————————
+		ftp_home_dir --> off		-----改为on
+		——————————
+		ftpd_connect_db --> off
+		ftpd_use_passive_mode --> off
+		httpd_enable_ftp_server --> off
+		tftp_anon_write --> off
+	setsebool -P allow_ftpd_full_access on
+	setsebool -P ftp_home_dir on
+	--用以上两个命令将off改为on
+6.关闭匿名访问：
+	vim /etc/vsftpd/vsftpd.conf
+	改为：
+	anonymous_enable=NO
+	重启ftp：
+	service vsftpd restart
+7.开启被动模式：
+	vim /etc/vsftpd/vsftpd.conf
+	添加：
+	pasv_min_port=30000
+	pasv_max_port=30999
+	防火墙开启此范围端口：
+	-A INPUT -m state --state NEW -m tcp -p tcp --dport 30000:30999 -j ACCEPT
+	chkconfig vsftpd on
+
+——————————————————————————————————————————
+
+查看是是否已经安装了 vsftpd 服务
+   ·chkconfig --list		
+	·默认情况下都是off：
+	·vsftpd          0:off   1:off   2:off   3:off   4:off   5:off   6:off 
+设置启动配置：
+   ·chkconfig --level 2345 vsftpd on
+	·vsftpd          0:off   1:off   2:on    3:on    4:on    5:on    6:off 
+yum命令直接安装：
+   ·yum -y install vsftpd   
+为它创建日志文件：	
+   ·touch /var/log/vsftpd.log	
+
+启动ftp服务：service vsftpd start
+查看ftp服务状态：service vsftpd status
+重启ftp服务：service vsftpd restart
+关闭ftp服务：service vsftpd stop
+
+--安装启动完成，但是不能正常连接
+
+配置vsftp服务：vi /etc/vsftpd/vsftpd.conf
+	·anonymous_enable=NO 	 #设定不允许匿名访问
+	·local_enable=YES       #设定本地用户可以访问。
+		注:如使用虚拟宿主用户，在该项目设定为NO的情况下所有虚拟用户将无法访问。
+	·chroot_list_enable=YES #使用户不能离开主目录
+	·xferlog_file=/var/log/vsftpd.log #设定vsftpd的服务日志保存路径
+		注:该文件默认不存在。必须要手动touch出来
+	·ascii_upload_enable=YES 	   #允许使用ASCII模式上传
+	·ascii_download_enable=YES 	   #设定支持ASCII模式的上传和下载功能。
+	·pam_service_name=vsftpd 	   #PAM认证文件名。PAM将根据/etc/pam.d/vsftpd进行认证
+	·新下入内容++++++++++++++++++++++++++++
+	·guest_enable=YES 	 #设定启用虚拟用户功能。
+	·guest_username=ftp     #指定虚拟用户的宿主用户
+
+
+
+——————————————————————————————————————————
+匿名访问
+ftp://192.168.4.5
+ftp://192.168.4.5/path/to/file
+
+
+用户验证访问
+ftp://user:pass@192.168.4.5
+ftp://user:pass@192.168.4.5/path/to/file
+
+
+主配置文件/etc/vsftpd/vsftpd.conf
+anonymous_enable=YES         //开启匿名共享
+local_enable=YES             //开启本地账户共享
+write_enable=YES             //本地账户是否可写
+anon_upload_enable=YES       //匿名用户是否可以上传文件
+anon_mkdir_write_enable=YES  //匿名可创建目录
+anon_other_write_enable=YES  //匿名删除，重命名
+chroot_local_user           //禁锢本地账户
+anon_root=/abc              //定义匿名用户根目录为/abc目录
+anon_umask=022              //定义匿名用户上传的掩码值
+listen_address=192.168.4.5  //定义监听地址为192.168.4.5
+
+
+
+——————————————————————————————————————————
+——————————————————————————————————————————
+--以下创建方式:
+	·生成普通用户，有系统登录权限
+		·useradd ftpuser 
+		·passwd  ftpuser
+	·生成普通用户，无系统登录权限，有ftp登录权限
+		·/home 目录下建立一个同名文件夹作为ftp指向目录
+		·useradd -g ftp -s /sbin/nologin ftpuser 
+		·passwd  ftpuser
+	·生成普通用户，ftp权限，ftp指向目录
+		·用户ftpuser，ftp目录指向/opt/ftpuser
+		·useradd -d /opt/ftpuser -g ftp -s /sbin/nologin ftpuser 
+		·passwd  ftpuser
+登录错误提示：
+	————————————————————————
+	500 OOPS: cannot change directory:/home/******* 
+	500 OOPS: child died 
+	解决：
+	setsebool -P ftpd_disable_trans 1 
+	service vsftpd restart
+	————————————————————————
+	命令:	STOR QQ图片20180509102810.jpg
+	响应:	550 Permission denied.
+	错误:	严重文件传输错误
+
+	原因：	vsftp默认配置不允许上传文件。
+	解决：	修改/etc/vsftpd.conf
+		将“write_enable=YES”前面的#取消。
+		重启vsftp服务器。
+		-----
+		可以上传到制定的文件夹（例如Downloads）
+		赋予这个文件夹读写权限（这次为了方面chmod  777 Downloads
+	————————————————————————
+——————————————————————————————————————————
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

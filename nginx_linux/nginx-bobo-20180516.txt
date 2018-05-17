@@ -66,15 +66,24 @@
 	5.nginx服务不关闭，但是需要修改配置文件并重新加载
 	  命令：./nginx -s reload
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+————————————————————————————————————
+nginx.pid丢失：不能重启的问题
+
+——————停止————————————
+ps aux|grep nginx 		查看nginx的主进程号
+kill -9 nginx的进程号   	强制停止nginx
+kill -quit nginx的进程号	从容停止nginx
+kill -term nginx的进程号 	快速的停止nginx
+
+./nginx -s stop 			快速停止nginx
+./nginx -s quit 			完整有序的停止nginx	
+——————启动————————————
+./nginx				/sbin/下执行nginx	
+nginx -c 特定位置的nginx.conf   一般默认是 nginx -c ./logs/nginx.conf
+——————重启————————————	
+./nginx -s reload 		平滑的重启。配置重载。	
+		
 	
 	
 	
