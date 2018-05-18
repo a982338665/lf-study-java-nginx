@@ -1,0 +1,7 @@
+﻿————————————————————————————
+
+
+$ yum install gcc -c++
+	14: PYCURL ERROR 6 - "Couldn't resolve host 	'mirrorlist.centos.org'"
+	Error: Cannot find a valid baseurl for repo: base
+
