@@ -33,11 +33,11 @@
 		--error-log-path=/var/log/nginx/error.log \
 		--http-log-path=/var/log/nginx/access.log \
 		--with-http_gzip_static_module \
-		--http-client-body-temp-path=/var/temp/nginx/client \
-		--http-proxy-temp-path=/var/temp/nginx/proxy \
-		--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
-		--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
-		--http-scgi-temp-path=/var/temp/nginx/scgi
+		--http-client-body-temp-path=/var/tmp/nginx/client \
+		--http-proxy-temp-path=/var/tmp/nginx/proxy \
+		--http-fastcgi-temp-path=/var/tmp/nginx/fastcgi \
+		--http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
+		--http-scgi-temp-path=/var/tmp/nginx/scgi
 		——————————————————————————————————————————
 		执行以上命令出现的问题：
 		 ./configure: error: C compiler cc is not found
@@ -85,6 +85,36 @@ nginx -c 特定位置的nginx.conf   一般默认是 nginx -c ./logs/nginx.conf
 ./nginx -s reload 		平滑的重启。配置重载。	
 		
 	
+————————————————————————————————————
+nginx的配置的静态资源服务器：
+  ·nginx访问报错403 is forbidden
+   引起nginx 403 forbidden通常是三种情况：
+	一是缺少索引文件，
+	二是权限问题，
+	三是SELinux状态。
+  1.vi /usr/local/nginx/nginx.conf
+  2.server {  
+  	listen       80;  
+  	server_name  localhost;  
+  	index  index.php index.html;  
+  	root  / var/www;
+	}
+    如果在/ var/www下面没有index.php,index.html的时候，直接访问域名，找不到文件，会报403 forbidden。
+  3.权限问题，如果nginx没有web目录的操作权限，也会出现403错误。
+	·chmod -R 755 / var/www
+	·vim /etc/nginx/nginx.conf  --把nginx的启动用户改成目录的所属用户方法：
+		user ftpuser
+  4.SELinux设置为开启状态（enabled）的原因：
+	
+	首先查看本机SELinux的开启状态，如果SELinux status参数为enabled即为开启状态
+	/usr/sbin/ sestatus -v
+	或者使用getenforce命令检查
+	找到原因了，如何关闭 SELinux 
+	1、临时关闭（不用重启）
+	setenforce 0
+	2、修改配置文件 /etc/ selinux/config，将SELINUX=enforcing改为SELINUX=disabled
+	vi /etc/ selinux/config
+		
 	
 	
 	

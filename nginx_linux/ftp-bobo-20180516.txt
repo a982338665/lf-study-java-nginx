@@ -44,8 +44,10 @@
 	pasv_max_port=30999
 	防火墙开启此范围端口：
 	-A INPUT -m state --state NEW -m tcp -p tcp --dport 30000:30999 -j ACCEPT
-	chkconfig vsftpd on
-
+8.开机自启设置：chkconfig vsftpd on
+9.登录图片服务器：
+	根目录：/home/ftpuser
+	ftp://192.168.134.128/1.jpg	
 ——————————————————————————————————————————
 
 查看是是否已经安装了 vsftpd 服务
