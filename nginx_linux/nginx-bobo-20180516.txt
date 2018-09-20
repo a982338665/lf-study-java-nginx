@@ -23,7 +23,7 @@
 2.编译安装：
 	0.下载：wget http://nginx.org/download/nginx-1.8.1.tar.gz
 	1.拷贝解压：tar -zxvf nginx-1.8.0.tar.gz
-	2.configure：./configure --help
+	2.进入解压目录执行:configure：./configure --help
 		·参数设置如下：
 		以下全为命令：--执行完成后创建文件MakeFile
 		./configure \
