@@ -128,18 +128,80 @@
                 proxy_set_header X-Forwarded-For $remote_addr;
                 }
 
+    *******************************
+     include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+     
+        upstream docker-tomcat-cluster {
+          server 127.0.0.1:8080;    
+          server 127.0.0.1:8081;
+        }
+        server { 
+            listen 80;
+            server_name 192.168.5.109; #must give the domain to match
+            location /JavaWeb { 
+              proxy_pass http://docker-tomcat-cluster ;
+              proxy_redirect off; 
+              proxy_set_header Host $host; 
+              proxy_set_header X-Real-IP $remote_addr; 
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+            } 
+        }
+    *******************************
+    
+**8.docker启动nginx：**
+
+    1.默认配置启动：
+        docker run -d --name es-nginx -p 8889:80 nginx
+        配置信息位置：
+        1.获取容器id：docker ps    
+        2.进入容器：docker exec -it 9fbe362214a6  bash 
+        3.找到默认配置文件:cd /etc/nginx/conf.d/ 
+        4.将容器29df10f32d44:/etc/nginx/nginx.conf 目录拷贝到主机/Users/healerjean/Desktop目录下：
+            docker cp  29df10f32d44:/etc/nginx/nginx.conf /Users/healerjean/Desktop
+        5.将主机/Users/healerjean/Desktop/AAA.md 拷贝到容器29df10f32d44:/etc/nginx/中
+            docker cp /Users/healerjean/Desktop/AAA.md 29df10f32d44:/etc/nginx/
+    2.开始指定挂载：
+        -1.先将文件复制出来：
+         docker run -d --name es-nginx-test -p 8889:80 nginx
+         docker ps -a   --找到es-nginx-test的容器id
+         --复制容器文件到待挂载位置：
+         docker cp 56f2f85cbe74:/etc/nginx/nginx.conf /usr/local/nginx/conf/
+         docker cp 56f2f85cbe74:/etc/nginx/conf.d/default.conf /usr/local/nginx/conf/
+         --修改nginx.conf: --不修改会报错，将会加载多次nginx.conf
+            修改include /etc/nginx/conf.d/*.conf;为include /etc/nginx/conf.d/default.conf
+        0.建议启动的时候挂载 ：:ro 表示分配给只读权限（这样容器就可以使用宿主主机的目录了）
+        1.docker run  -d --name es-nginx -p 8887:80  \
+            -v /usr/local/nginx/html:/usr/share/nginx/html:ro \
+            -v /usr/local/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+            -v /usr/local/nginx/conf:/etc/nginx/conf.d \
+            -v /usr/local/nginx/logs:/var/log/nginx \
+            nginx
+        2,解释：
+            第1个-v：项目挂载目录
+            第2个-v：nginx.conf文件挂载，第三个-v中的default.conf会用到
+            第3个-v：conf.d文件夹挂载
     
     
+    docker run -d --restart=always -p 9200:9200 -p 9300:9300 
+    --name=es-s1 
+    --oom-kill-disable=true 
+    --memory-swappiness=1 
+    --privileged=true   --使用该参数，container内的root拥有真正的root权限
+    -v /data/elasticsearch/es1/data:/usr/share/elasticsearch/data  
+    -v /data/elasticsearch/es1/logs:/usr/share/elasticsearch/logs 
+    -v /data/elasticsearch/es1/config:/usr/share/elasticsearch/config 
+    -v /data/elasticsearch/es1/plugins:/usr/share/elasticsearch/plugins docker.io/elasticsearch:5.5.2
     
     
+**9.nginx模拟浏览器登录-使用postman：**    
     
-    
-    
-    
-    
-    
-    
-    
+    --见图
+    GET http://nginxtest.mytest1.dnion.com:8080/html/test.html HTTP/1.0
+    User-Agent: Wget/1.12 (linux-gnu)
+    Accept: */*
+    Host: nginxtest.mytest1.dnion.com:8080
+    Authorization: Basic bGlxaW5nOmxpcWluZw== 【红色的部分是base64(用户名：密码)的值】
     
     
     
